@@ -5,6 +5,7 @@ import com.cookfromfridge.entities.Ingredient;
 import com.cookfromfridge.db.DatabaseManager;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -15,6 +16,7 @@ public class Main {
         for (Ingredient ingredient : ingredients) {
             System.out.println(ingredient.getName() + ": " + ingredient.getQuantity());
 
+            // Получаем рецепты на основе ингредиента
             ResultSet recipes = DatabaseManager.getRecipesByIngredient(ingredient.getName());
             try {
                 if (recipes != null) {
@@ -26,8 +28,8 @@ public class Main {
                 } else {
                     System.out.println("No recipes found for " + ingredient.getName());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                System.out.println("Error while fetching recipes: " + e.getMessage());
             }
         }
     }
