@@ -11,9 +11,9 @@ public class ConsoleMenu {
     public static List<Ingredient> getIngredientsFromUser() {
         Scanner scanner = new Scanner(System.in);
         List<Ingredient> ingredients = new ArrayList<>();
-
-        System.out.println("Enter ingredients (name and quantity separated by space): ");
         String input;
+
+        System.out.println("Enter ingredients (name and quantity separated by space):");
 
         while (true) {
             input = scanner.nextLine();
@@ -23,7 +23,6 @@ public class ConsoleMenu {
 
             String[] parts = input.split(" ");
             if (parts.length != 2) {
-                System.out.println("Invalid format! Enter: ingredient_name quantity");
                 continue;
             }
 
@@ -32,7 +31,6 @@ public class ConsoleMenu {
             try {
                 quantity = Integer.parseInt(parts[1]);
             } catch (NumberFormatException e) {
-                System.out.println("Quantity must be a number!");
                 continue;
             }
 
