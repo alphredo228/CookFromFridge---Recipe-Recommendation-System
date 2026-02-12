@@ -1,4 +1,4 @@
-package com.cookfromfridge;
+package Main.java;
 
 import com.cookfromfridge.ui.ConsoleMenu;
 import com.cookfromfridge.entities.Ingredient;
@@ -16,7 +16,6 @@ public class Main {
         for (Ingredient ingredient : ingredients) {
             System.out.println(ingredient.getName() + ": " + ingredient.getQuantity());
 
-            // Получаем рецепты на основе ингредиента
             ResultSet recipes = DatabaseManager.getRecipesByIngredient(ingredient.getName());
             try {
                 if (recipes != null) {
