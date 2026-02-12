@@ -2,18 +2,33 @@ package com.cookfromfridge;
 
 import com.cookfromfridge.ui.ConsoleMenu;
 import com.cookfromfridge.entities.Ingredient;
+import com.cookfromfridge.db.DatabaseManager;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // Get ingredients from user
         List<Ingredient> ingredients = ConsoleMenu.getIngredientsFromUser();
 
-        // Display the ingredients entered by the user
         System.out.println("Entered ingredients:");
         for (Ingredient ingredient : ingredients) {
             System.out.println(ingredient.getName() + ": " + ingredient.getQuantity());
+
+            ResultSet recipes = DatabaseManager.getRecipesByIngredient(ingredient.getName());
+            try {
+                if (recipes != null) {
+                    while (recipes.next()) {
+                        String recipeName = recipes.getString("name");
+                        String instructions = recipes.getString("instructions");
+                        System.out.println("Recipe: " + recipeName + "\nInstructions: " + instructions);
+                    }
+                } else {
+                    System.out.println("No recipes found for " + ingredient.getName());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
