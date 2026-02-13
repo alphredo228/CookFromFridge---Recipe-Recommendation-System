@@ -1,4 +1,4 @@
-package Main.java;
+package com.cookfromfridge;
 
 import com.cookfromfridge.ui.ConsoleMenu;
 import com.cookfromfridge.entities.Ingredient;
