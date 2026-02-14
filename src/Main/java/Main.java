@@ -1,35 +1,34 @@
-package com.cookfromfridge;
-
-import com.cookfromfridge.ui.ConsoleMenu;
-import com.cookfromfridge.entities.Ingredient;
 import com.cookfromfridge.db.DatabaseManager;
+import com.cookfromfridge.db.RecipeRepository;
+import com.cookfromfridge.entities.Ingredient;
+import com.cookfromfridge.entities.Recipe;
+import com.cookfromfridge.service.RecipeService;
+import com.cookfromfridge.ui.ConsoleMenu;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<Ingredient> ingredients = ConsoleMenu.getIngredientsFromUser();
+        String url = "jdbc:postgresql://localhost:5433/cookfromfridge";
+        String user = "postgres";
+        String password = "oop228";
 
-        System.out.println("Entered ingredients:");
-        for (Ingredient ingredient : ingredients) {
-            System.out.println(ingredient.getName() + ": " + ingredient.getQuantity());
+        DatabaseManager db = DatabaseManager.getInstance(url, user, password);
+        RecipeRepository repo = new RecipeRepository(db);
+        RecipeService service = new RecipeService(repo);
 
-            ResultSet recipes = DatabaseManager.getRecipesByIngredient(ingredient.getName());
-            try {
-                if (recipes != null) {
-                    while (recipes.next()) {
-                        String recipeName = recipes.getString("name");
-                        String instructions = recipes.getString("instructions");
-                        System.out.println("Recipe: " + recipeName + "\nInstructions: " + instructions);
-                    }
-                } else {
-                    System.out.println("No recipes found for " + ingredient.getName());
-                }
-            } catch (SQLException e) {
-                System.out.println("Error while fetching recipes: " + e.getMessage());
-            }
+        List<Ingredient> userIngredients = ConsoleMenu.getIngredientsFromUser();
+        List<Recipe> matches = service.findMatchingRecipes(userIngredients);
+
+        if (matches.isEmpty()) {
+            System.out.println("No recipes found for your ingredients.");
+            return;
+        }
+
+        System.out.println("\nMatching recipes:");
+        for (Recipe r : matches) {
+            System.out.println("\n=== " + r.getName() + " ===");
+            System.out.println(r.getInstructions());
         }
     }
 }
